@@ -11,6 +11,19 @@ module TaskManager
           tasks = TaskBlueprint.render_as_json(Task.all, view: :normal)
           present tasks
         end
+
+        desc 'Return a specific task'
+        route_param :id do
+          begin
+            get do
+              task = TaskBlueprint.render_as_json(Task.find(params[:id]), view: :extended)
+              present task
+              status :ok
+            rescue ActiveRecord::RecordNotFound => e
+              error!(e, :not_found)
+            end
+          end
+        end
       end
     end
   end

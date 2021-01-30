@@ -31,6 +31,7 @@ module TaskManager
           requires :user_id, type: Integer
           requires :task_name, type: String, allow_blank: false
           requires :description, type: String
+          requires :status, type: String, except_values: { value: ['In Progress','Closed','Resolved','Reopen'], message: 'when you create a task should be only - Open' }
           optional :performer_id, type: Integer
           optional :due_date, type: Date
 
@@ -50,6 +51,7 @@ module TaskManager
         params do
           requires :task_name, type: String, allow_blank: false
           requires :description, type: String
+          requires :status, type: String, values: { value: ['Open', 'In Progress', 'Reopen', 'Resolved', 'Closed'], message: 'when you update a task should be Open/In Progress/Resolved/Reopen or Closed'}
           requires :performer_id, type: Integer
           requires :due_date, type: Date
         end

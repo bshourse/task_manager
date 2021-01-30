@@ -10,6 +10,8 @@ projects = []
   projects << p.id
 end
 
+status = ['Open', 'In Progress', 'Resolved', 'Reopen', 'Closed']
+
 20.times do |i|
-  Task.create(project_id: projects.sample, user_id: users.sample, task_name: "Тестовая задача #{i+1}", description: "Здесь должно быть описание #{i+1}-ой задачи", performer_id: users.sample, due_date: Date.today + rand(15), implementation_time: "")
+  Task.create(project_id: projects.sample, user_id: users.sample, task_name: "Тестовая задача #{i+1}", description: "Здесь должно быть описание #{i+1}-ой задачи", status: status.sample, performer_id: users.sample, due_date: Date.today + rand(15), implementation_time: "")
 end

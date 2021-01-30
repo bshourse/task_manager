@@ -4,7 +4,7 @@ module TaskManager
       identifier :id
 
       view :normal do
-        fields  :user_id, :project_id, :task_name, :due_date
+        fields  :user_id, :project_id, :task_name, :status, :due_date
       end
 
       view :extended do

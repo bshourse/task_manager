@@ -3,6 +3,10 @@ module TaskManager
     class TaskBlueprint < Blueprinter::Base
       identifier :id
 
+      view :short do
+        fields :user_id, :task_name, :status
+      end
+
       view :normal do
         fields  :user_id, :project_id, :task_name, :status, :due_date
       end

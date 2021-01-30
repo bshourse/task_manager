@@ -70,4 +70,15 @@ describe 'Tasks API', type: :request do
       expect(response).to have_http_status(:success)
     end
   end
+
+  describe 'Delete task' do
+    let!(:user) { FactoryBot.create(:user, first_name: 'user_for_test', email: "test@jetrockets.com", password_digest: 123) }
+    let!(:project) { FactoryBot.create(:project, project_name: 'project_for_test', user_id: user.id) }
+    let!(:task) { FactoryBot.create(:task, task_name: 'Тask001', status: "Open", project_id: project.id, user_id: user.id, performer_id: rand(1..3)) }
+
+    it 'should return 204 status' do
+      delete "/api/v1/tasks/#{task.id}"
+      expect(response).to have_http_status(:no_content)
+    end
+  end
 end

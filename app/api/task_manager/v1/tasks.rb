@@ -6,10 +6,12 @@ module TaskManager
       prefix :api # с этим префиксом я получаю доступ к точкам входа /api в роутах же задал TaskManager::Base => '/'
 
       resource :tasks do
+
         desc 'Return list of tasks'
         get do
           tasks = TaskBlueprint.render_as_json(Task.all, view: :normal)
           present tasks
+          status :ok
         end
 
         desc 'Return a specific task'

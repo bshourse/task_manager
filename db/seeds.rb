@@ -1,6 +1,6 @@
 users = []
 5.times do |i|
-  u = User.create(first_name: "user_#{i+1}", last_name: "user_#{i+1}_last_name", email: "test_#{i+1}@test.com", password_digest: BCrypt::Password.create("12#{i}"))
+  u = User.create(first_name: "user_#{i+1}", last_name: "user_#{i+1}_last_name", email: "test_#{i+1}@test.com", password: ("12#{i}"))
   users << u.id
 end
 

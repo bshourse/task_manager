@@ -69,7 +69,7 @@ module TaskManager
         route_param :id do
           delete do
             begin
-              Project.find(params[:id]).delete
+              Project.find(params[:id]).destroy
               status :no_content
             rescue ActiveRecord::RecordNotFound => e
               error!(e, not_found)

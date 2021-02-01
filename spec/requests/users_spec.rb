@@ -49,7 +49,7 @@ describe 'Users API', type: :request do
 
     describe 'Update user' do
       let!(:user) { FactoryBot.create(:user, first_name: 'user_for_test', email: 'test2@jetrockets.com', password_digest: 123) }
-      let!(:params) { {first_name: 'user_first_name', last_name: 'new_last_name', email: 'test2@jetrockets.com', password: 123} }
+      let!(:params) { {first_name: 'user_first_name', last_name: 'new_last_name', email: 'test2@jetrockets.com', password: 123, deleted_at: ''} }
 
       it 'should update user' do
         patch "/api/v1/users/#{user.id}", params: params
@@ -64,11 +64,20 @@ describe 'Users API', type: :request do
 
     describe 'Delete user' do
       let!(:user) { FactoryBot.create(:user, first_name: 'user_for_test', email: 'test2@jetrockets.com', password_digest: 123) }
+      let!(:params_for_user_update) { {first_name: 'user_first_name', last_name: 'new_last_name', email: 'test2@jetrockets.com', password: 123, deleted_at: ''} }
+      let!(:params_for_check_user_result) { {first_name: 'user_first_name', last_name: 'new_last_name', email: 'test2@jetrockets.com', password: 123, deleted_at: Time.now.utc.strftime('%Y-%m-%d %H:%M')} }
 
       it 'should return 204 status' do
         delete "/api/v1/users/#{user.id}"
         expect(response).to have_http_status(:no_content)
       end
+
+      it 'should return value of parameter "deleted_at" = Time.now' do
+        patch "/api/v1/users/#{user.id}", params: params_for_user_update
+        delete "/api/v1/users/#{user.id}"
+        expect(user.reload.deleted_at.strftime('%Y-%m-%d %H:%M')).to eq(params_for_check_user_result[:deleted_at])
+      end
+
     end
   end
 end

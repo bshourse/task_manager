@@ -9,7 +9,7 @@ module TaskManager
 
         desc 'Return list of projects'
         get do
-          projects = ProjectBlueprint.render_as_json(Project.all.includes(:tasks), view: :normal_with_tasks) # вызываю includes для исключения проблемы n+1
+          projects = ProjectBlueprint.render_as_json(Project.all.includes(:tasks).where("deleted_at is null"), view: :normal_with_tasks) # вызываю includes для исключения проблемы n+1
           present projects
           status :ok
         end
@@ -46,6 +46,7 @@ module TaskManager
         desc 'Update project'
         params do
           requires :project_name, type: String, allow_blank: false
+          requires :deleted_at, type: DateTime
         end
 
         route_param :id do
@@ -69,7 +70,12 @@ module TaskManager
         route_param :id do
           delete do
             begin
-              Project.find(params[:id]).destroy
+              project = Project.find(params[:id])
+              project.update!(deleted_at: Time.now)
+              if Task.exists?(:project_id => "#{project.id}") # тут делаю проверку чтобы лишний раз не пытать обновить задачи, если у проекта их нет
+                task = Task.where("project_id = #{project.id}")
+                task.update_all(deleted_at: Time.now)
+              end
               status :no_content
             rescue ActiveRecord::RecordNotFound => e
               error!(e, not_found)

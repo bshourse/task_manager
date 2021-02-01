@@ -9,7 +9,7 @@ module TaskManager
 
         desc 'Return list of tasks'
         get do
-          tasks = TaskBlueprint.render_as_json(Task.all, view: :normal)
+          tasks = TaskBlueprint.render_as_json(Task.all.where("deleted_at is null"), view: :normal)
           present tasks
           status :ok
         end
@@ -56,6 +56,7 @@ module TaskManager
           requires :status, type: String, values: { value: ['Open', 'In Progress', 'Reopen', 'Resolved', 'Closed'], message: 'when you update a task should be Open/In Progress/Resolved/Reopen or Closed'}
           requires :performer_id, type: Integer
           requires :due_date, type: Date
+          requires :deleted_at, type: DateTime
         end
         route_param :id do
           patch do
@@ -78,7 +79,8 @@ module TaskManager
         route_param :id do
           delete do
             begin
-              Task.find(params[:id]).delete
+              task = Task.find(params[:id])
+              task.update!(deleted_at: Time.now)
               status :no_content
             rescue ActiveRecord::RecordNotFound => e
               error!(e, :not_found)

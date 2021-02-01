@@ -9,7 +9,7 @@ module TaskManager
 
         desc 'Return list of users'
         get do
-          users = UserBlueprint.render_as_json(User.all.includes(:projects), view: :without_user_tasks)
+          users = UserBlueprint.render_as_json(User.all.includes(:projects).where("deleted_at is null" ), view: :without_user_tasks)
           present users
           status :ok
         end
@@ -51,6 +51,7 @@ module TaskManager
           requires :last_name, type: String, allow_blank: false
           requires :email, type: String, allow_blank: false
           requires :password, type: String, allow_blank: false
+          requires :deleted_at, type: DateTime
         end
 
         route_param :id do
@@ -73,7 +74,8 @@ module TaskManager
         route_param :id do
           delete do
             begin
-              User.find(params[:id]).delete
+              user = User.find(params[:id])
+              user.update!(deleted_at: Time.now)
               status :no_content
             rescue ActiveRecord::RecordNotFound => e
               error!(e, :not_found)

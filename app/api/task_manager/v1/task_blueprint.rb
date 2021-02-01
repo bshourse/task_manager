@@ -14,6 +14,7 @@ module TaskManager
       view :extended do
         include_view :normal
         fields :description, :implementation_time
+        field :deleted_at, datetime_format: "%d-%B-%Y %H:%M:%S"
       end
     end
   end

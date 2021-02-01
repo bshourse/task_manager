@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_30_100330) do
+ActiveRecord::Schema.define(version: 2021_02_01_131425) do
 
   create_table "projects", force: :cascade do |t|
     t.integer "user_id"
     t.string "project_name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.datetime "deleted_at"
     t.index ["user_id"], name: "index_projects_on_user_id"
   end
 
@@ -31,6 +32,7 @@ ActiveRecord::Schema.define(version: 2021_01_30_100330) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "description"
     t.string "status"
+    t.datetime "deleted_at"
     t.index ["project_id"], name: "index_tasks_on_project_id"
     t.index ["user_id"], name: "index_tasks_on_user_id"
   end
@@ -42,6 +44,7 @@ ActiveRecord::Schema.define(version: 2021_01_30_100330) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "last_name"
+    t.datetime "deleted_at"
   end
 
 end

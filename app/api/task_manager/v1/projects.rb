@@ -9,18 +9,30 @@ module TaskManager
 
         desc 'Return list of projects'
         get do
-          projects = ProjectBlueprint.render_as_json(Project.all.includes(:tasks).where("deleted_at is null"), view: :normal_with_tasks) # вызываю includes для исключения проблемы n+1
-          present projects
-          status :ok
+          if params[:include] == 'tasks' # если вызываем get /projects?include=tasks то ответ содержит проекты и связанные задачи
+            projects = ProjectBlueprint.render_as_json(Project.all.includes(:tasks).where("deleted_at is null"), view: :normal_with_tasks)
+            present projects
+            status :ok
+          else # если вызываем без дополнительного параметра get /projects то ответ содержит только проекты
+            projects = ProjectBlueprint.render_as_json(Project.all.where("deleted_at is null"), view: :normal_without_tasks)
+            present projects
+            status :ok
+          end
         end
 
         desc 'Return a specific project'
         route_param :id do
           get do
             begin
-              project = ProjectBlueprint.render_as_json(Project.find(params[:id]), view: :normal_with_tasks)
-              present project
-              status :ok
+              if params[:include] == 'tasks'
+                project = ProjectBlueprint.render_as_json(Project.find(params[:id]), view: :normal_with_tasks)
+                present project
+                status :ok
+              else
+                project = ProjectBlueprint.render_as_json(Project.find(params[:id]), view: :normal_without_tasks)
+                present project
+                status :ok
+              end
             rescue ActiveRecord::RecordNotFound => e
               error!(e, :not_found)
             end

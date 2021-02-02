@@ -9,18 +9,43 @@ module TaskManager
 
         desc 'Return list of users'
         get do
-          users = UserBlueprint.render_as_json(User.all.includes(:projects).where("deleted_at is null" ), view: :without_user_tasks)
-          present users
-          status :ok
+          if params[:include] == 'projects'
+            users = UserBlueprint.render_as_json(User.all.includes(:projects).where("deleted_at is null"), view: :without_user_tasks)
+            present users
+            status :ok
+          elsif params[:include] == 'projects_and_tasks' || params[:include] == 'tasks_and_projects'
+            users = UserBlueprint.render_as_json(User.all.includes(:projects, :tasks).where("deleted_at is null"), view: :with_user_projects_and_tasks)
+            present users
+            status :ok
+          else
+            users = UserBlueprint.render_as_json(User.all.where("deleted_at is null"), view: :normal)
+            present users
+            status :ok
+          end
         end
 
         desc 'Return specific user with project and his tasks'
         route_param :id do
           get do
             begin
-              user = UserBlueprint.render_as_json(User.find(params[:id]), view: :with_user_projects_and_tasks)
-              present user
-              status :ok
+              case
+              when params[:include] == 'projects_and_tasks' || params[:include] == 'tasks_and_projects'
+                user = UserBlueprint.render_as_json(User.find(params[:id]), view: :with_user_projects_and_tasks)
+                present user
+                status :ok
+              when params[:include] == 'projects'
+                user = UserBlueprint.render_as_json(User.find(params[:id]), view: :without_user_tasks)
+                present user
+                status :ok
+              when params[:include] == 'tasks'
+                user = UserBlueprint.render_as_json(User.find(params[:id]), view: :without_user_projects)
+                present user
+                status :ok
+              else
+                user = UserBlueprint.render_as_json(User.find(params[:id]), view: :normal)
+                present user
+                status :ok
+              end
             rescue ActiveRecord::RecordNotFound => e
               error!(e, :not_found)
             end

@@ -12,6 +12,11 @@ module TaskManager
         association :projects, blueprint: ProjectBlueprint, view: :normal_without_tasks
       end
 
+      view :without_user_projects do
+        fields :first_name, :last_name, :email
+        association :tasks, blueprint: TaskBlueprint, view: :extended
+      end
+
       view :with_user_projects_and_tasks do # пользователи и проекты с задачами которые они создали
         fields :first_name, :last_name, :email
         field :deleted_at, datetime_format: "%d-%B-%Y %H:%M:%S"

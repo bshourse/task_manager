@@ -5,20 +5,30 @@ module TaskManager
       format :json
       prefix :api
 
+      helpers V1::Helpers::UserHelpers, V1::Helpers::PresenterHelpers
+
+      rescue_from ActiveRecord::RecordNotFound do |e|
+        error!(e.message, 404)
+      end
+
+      rescue_from ActiveRecord::RecordInvalid do |e|
+        error!(e.message, 422)
+      end
+
       resource :users do
 
         desc 'Return list of users'
         get do
           if params[:include] == 'projects'
-            users = UserBlueprint.render_as_json(User.all.includes(:projects).where("deleted_at is null"), view: :without_user_tasks)
+            users = user_presenter(all_users.includes(:projects).where("deleted_at is null"), view: :without_user_tasks)
             present users
             status :ok
           elsif params[:include] == 'projects_and_tasks' || params[:include] == 'tasks_and_projects'
-            users = UserBlueprint.render_as_json(User.all.includes(:projects, :tasks).where("deleted_at is null"), view: :with_user_projects_and_tasks)
+            users = user_presenter(all_users.includes(:projects, :tasks).where("deleted_at is null"), view: :with_user_projects_and_tasks)
             present users
             status :ok
           else
-            users = UserBlueprint.render_as_json(User.all.where("deleted_at is null"), view: :normal)
+            users = user_presenter(all_users.where("deleted_at is null"), view: :normal)
             present users
             status :ok
           end
@@ -27,28 +37,24 @@ module TaskManager
         desc 'Return specific user with project and his tasks'
         route_param :id do
           get do
-            begin
               case
               when params[:include] == 'projects_and_tasks' || params[:include] == 'tasks_and_projects'
-                user = UserBlueprint.render_as_json(User.find(params[:id]), view: :with_user_projects_and_tasks)
+                user = user_presenter(current_user, view: :with_user_projects_and_tasks)
                 present user
                 status :ok
               when params[:include] == 'projects'
-                user = UserBlueprint.render_as_json(User.find(params[:id]), view: :without_user_tasks)
+                user = user_presenter(current_user, view: :without_user_tasks)
                 present user
                 status :ok
               when params[:include] == 'tasks'
-                user = UserBlueprint.render_as_json(User.find(params[:id]), view: :without_user_projects)
+                user = user_presenter(current_user, view: :without_user_projects)
                 present user
                 status :ok
               else
-                user = UserBlueprint.render_as_json(User.find(params[:id]), view: :normal)
+                user = user_presenter(current_user, view: :normal)
                 present user
                 status :ok
               end
-            rescue ActiveRecord::RecordNotFound => e
-              error!(e, :not_found)
-            end
           end
         end
 
@@ -61,13 +67,9 @@ module TaskManager
         end
 
         post do
-          begin
-            user = UserBlueprint.render_as_json(User.create!(declared(params)), view: :normal)
+            user = user_presenter(User.create!(declared(params)), view: :normal)
             present user
             status :created
-          rescue ActiveRecord::RecordInvalid => e
-            error!(e, :unprocessable_entity)
-          end
         end
 
         desc 'Update user'
@@ -81,30 +83,20 @@ module TaskManager
 
         route_param :id do
           patch do
-            begin
-              user = User.find(params[:id])
+              user = current_user
               user.update!(declared(params))
-              updated_user = UserBlueprint.render_as_json(user, view: :normal)
+              updated_user = user_presenter(user, view: :normal)
               present updated_user
               status :ok
-            rescue ActiveRecord::RecordNotFound => e
-              error!(e, :not_found)
-            rescue ActiveRecord::RecordInvalid => e
-              error!(e, :unprocessable_entity)
-            end
           end
         end
 
         desc 'Delete user'
         route_param :id do
           delete do
-            begin
-              user = User.find(params[:id])
+              user = current_user
               user.update!(deleted_at: Time.now)
               status :no_content
-            rescue ActiveRecord::RecordNotFound => e
-              error!(e, :not_found)
-            end
           end
         end
       end

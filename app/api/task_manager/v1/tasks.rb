@@ -15,6 +15,10 @@ module TaskManager
         error!(e.message, 422)
       end
 
+      rescue_from ArgumentError do |e|
+        error!(e.message, 400)
+      end
+
       resource :tasks do
 
         desc 'Return list of tasks'
@@ -39,7 +43,7 @@ module TaskManager
           requires :user_id, type: Integer
           requires :task_name, type: String, allow_blank: false
           requires :description, type: String
-          requires :status, type: String, except_values: { value: ['In Progress','Closed','Resolved','Reopen'], message: 'when you create a task should be only - Open' }
+          requires :status, type: Integer, except_values: { value: [1, 2, 3, 4], message: 'when you create a task should be only: 0 - Open' }
           optional :performer_id, type: Integer
           optional :due_date, type: Date
         end
@@ -54,7 +58,7 @@ module TaskManager
         params do
           requires :task_name, type: String, allow_blank: false
           requires :description, type: String
-          requires :status, type: String, values: { value: ['Open', 'In Progress', 'Reopen', 'Resolved', 'Closed'], message: 'when you update a task should be Open/In Progress/Resolved/Reopen or Closed'}
+          requires :status, type: Integer, values: { value: [0, 1, 2, 3, 4], message: 'when you update a task should be 0 - Open | 1 - in_progress | 2 - resolved | 3 - reopen | 4 - closed'}
           requires :performer_id, type: Integer
           requires :due_date, type: Date
           requires :deleted_at, type: DateTime

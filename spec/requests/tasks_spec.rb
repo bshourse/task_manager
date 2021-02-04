@@ -20,7 +20,7 @@ describe 'Tasks API', type: :request do
 
     let!(:user) { FactoryBot.create(:user, first_name: 'user_for_test', email: "test@jetrockets.com", password_digest: 123) }
     let!(:project) { FactoryBot.create(:project, project_name: 'project_for_test', user_id: user.id) }
-    let!(:task) { FactoryBot.create(:task, task_name: 'Testname', status: "Open", project_id: project.id, user_id: user.id, performer_id: rand(1..3)) }
+    let!(:task) { FactoryBot.create(:task, task_name: 'Testname', status: 0, project_id: project.id, user_id: user.id, performer_id: rand(1..3)) }
 
     it 'should return 404 status for invalid id' do
       get '/api/v1/tasks/9999'
@@ -37,7 +37,7 @@ describe 'Tasks API', type: :request do
   describe 'Create new task' do
     let!(:user) { FactoryBot.create(:user, first_name: 'user_for_test', email: "test@jetrockets.com", password_digest: 123) }
     let!(:project) { FactoryBot.create(:project, project_name: 'project_for_test', user_id: user.id) }
-    let!(:params) { {project_id: project.id, user_id: user.id, task_name: "Task001", description: "Тестовая задача для теста", status: "Open", performer_id: rand(1..3), due_date: "2020-02-23"} }
+    let!(:params) { {project_id: project.id, user_id: user.id, task_name: "Task001", description: "Тестовая задача для теста", status: 0, performer_id: rand(1..3), due_date: "2020-02-23"} }
 
     it 'should create a new task' do
       post '/api/v1/tasks', params: params
@@ -57,12 +57,13 @@ describe 'Tasks API', type: :request do
   describe 'Update task' do
     let!(:user) { FactoryBot.create(:user, first_name: 'user_for_test', email: "test@jetrockets.com", password_digest: 123) }
     let!(:project) { FactoryBot.create(:project, project_name: 'project_for_test', user_id: user.id) }
-    let!(:task) { FactoryBot.create(:task, task_name: 'Тask001', status: "Open", project_id: project.id, user_id: user.id, performer_id: rand(1..3)) }
-    let!(:params) { {task_name: "Тask001", description: "Тестовая задача для теста", status: "Resolved", performer_id: rand(1..3), due_date: "2020-02-23", deleted_at: ''} }
+    let!(:task) { FactoryBot.create(:task, task_name: 'Тask001', status: 0, project_id: project.id, user_id: user.id, performer_id: rand(1..3)) }
+    let!(:params) { {task_name: "Тask001", description: "Тестовая задача для теста", status: 2, performer_id: rand(1..3), due_date: "2020-02-23", deleted_at: ''} }
+    let!(:params_for_check_status) { {task_name: "Тask001", description: "Тестовая задача для теста", status: "resolved", performer_id: rand(1..3), due_date: "2020-02-23", deleted_at: ''} }
 
     it 'should update task' do
       patch "/api/v1/tasks/#{task.id}", params: params
-      expect(task.reload.status).to eq(params[:status])
+      expect(task.reload.status).to eq(params_for_check_status[:status])
     end
 
     it 'should return success status' do
@@ -74,9 +75,9 @@ describe 'Tasks API', type: :request do
   describe 'Delete task' do
     let!(:user) { FactoryBot.create(:user, first_name: 'user_for_test', email: "test@jetrockets.com", password_digest: 123) }
     let!(:project) { FactoryBot.create(:project, project_name: 'project_for_test', user_id: user.id) }
-    let!(:task) { FactoryBot.create(:task, task_name: 'Тask001', status: "Open", project_id: project.id, user_id: user.id, performer_id: rand(1..3)) }
-    let!(:params_for_task_update) { {task_name: "Тask001", description: "Тестовая задача для теста", status: "Resolved", performer_id: rand(1..3), due_date: "2020-02-23", deleted_at: ''} }
-    let!(:params_for_check_task_result) { {task_name: "Тask001", description: "Тестовая задача для теста", status: "Resolved", performer_id: rand(1..3), due_date: "2020-02-23", deleted_at: Time.now.utc.strftime('%Y-%m-%d %H:%M')} }
+    let!(:task) { FactoryBot.create(:task, task_name: 'Тask001', status: 0, project_id: project.id, user_id: user.id, performer_id: rand(1..3)) }
+    let!(:params_for_task_update) { {task_name: "Тask001", description: "Тестовая задача для теста", status: 2, performer_id: rand(1..3), due_date: "2020-02-23", deleted_at: ''} }
+    let!(:params_for_check_task_result) { {task_name: "Тask001", description: "Тестовая задача для теста", status: 2, performer_id: rand(1..3), due_date: "2020-02-23", deleted_at: Time.now.utc.strftime('%Y-%m-%d %H:%M')} }
 
     it 'should return 204 status' do
       delete "/api/v1/tasks/#{task.id}"

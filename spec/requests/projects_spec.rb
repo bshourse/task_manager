@@ -69,9 +69,9 @@ describe 'Projects API', type: :request do
   describe 'Delete project' do
     let!(:user) { FactoryBot.create(:user, first_name: 'user_for_test', email: 'test2@jetrockets.com', password_digest: 123) }
     let!(:project) { FactoryBot.create(:project, user_id: user.id, project_name: 'req_project_test') }
-    let!(:task) { FactoryBot.create(:task, task_name: 'Тask001', status: "Open", project_id: project.id, user_id: user.id, performer_id: rand(1..3)) }
-    let!(:params_for_task_update) { {task_name: "Тask001", description: "Тестовая задача для теста", status: "Resolved", performer_id: rand(1..3), due_date: "2020-02-23", deleted_at: ''} }
-    let!(:params_for_check_task_result) { {task_name: "Тask001", description: "Тестовая задача для теста", status: "Resolved", performer_id: rand(1..3), due_date: "2020-02-23", deleted_at: Time.now.utc.strftime('%Y-%m-%d %H:%M')} }
+    let!(:task) { FactoryBot.create(:task, task_name: 'Тask001', status: 0, project_id: project.id, user_id: user.id, performer_id: rand(1..3)) }
+    let!(:params_for_task_update) { {task_name: "Тask001", description: "Тестовая задача для теста", status: 2, performer_id: rand(1..3), due_date: "2020-02-23", deleted_at: ''} }
+    let!(:params_for_check_task_result) { {task_name: "Тask001", description: "Тестовая задача для теста", status: 2, performer_id: rand(1..3), due_date: "2020-02-23", deleted_at: Time.now.utc.strftime('%Y-%m-%d %H:%M')} }
     let!(:params_for_project_update) { {user_id: user.id, project_name: 'req_project_test', deleted_at: ''} }
     let!(:params_for_check_project_result) { {user_id: user.id, project_name: 'req_project_test', deleted_at: Time.now.utc.strftime('%Y-%m-%d %H:%M')} }
 

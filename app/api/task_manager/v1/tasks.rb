@@ -23,7 +23,7 @@ module TaskManager
 
         desc 'Return list of tasks'
         get do
-          tasks = task_presenter(Task.all.where("deleted_at is null"), view: :normal)
+          tasks = task_presenter(Task.all, view: :normal)
           present tasks
           status :ok
         end

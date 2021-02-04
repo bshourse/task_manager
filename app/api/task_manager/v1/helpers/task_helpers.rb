@@ -4,7 +4,7 @@ module TaskManager
       module TaskHelpers
 
         def current_task
-          Task.find(params[:id])
+          Task.unscoped.find(params[:id])
         end
 
       end

@@ -20,11 +20,11 @@ module TaskManager
         desc 'Return list of projects'
         get do
           if params[:include] == 'tasks' # если вызываем get /projects?include=tasks то ответ содержит проекты и связанные задачи
-            projects = project_presenter(all_projects.includes(:tasks).where("deleted_at is null"), view: :normal_with_tasks)
+            projects = project_presenter(all_projects.includes(:tasks), view: :normal_with_tasks)
             present projects
             status :ok
           else # если вызываем без дополнительного параметра get /projects то ответ содержит только проекты
-            projects = project_presenter(all_projects.where("deleted_at is null"), view: :normal_without_tasks)
+            projects = project_presenter(all_projects, view: :normal_without_tasks)
             present projects
             status :ok
           end

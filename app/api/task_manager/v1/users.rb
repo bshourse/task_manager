@@ -20,15 +20,15 @@ module TaskManager
         desc 'Return list of users'
         get do
           if params[:include] == 'projects'
-            users = user_presenter(all_users.includes(:projects).where("deleted_at is null"), view: :without_user_tasks)
+            users = user_presenter(all_users.includes(:projects), view: :without_user_tasks)
             present users
             status :ok
           elsif params[:include] == 'projects_and_tasks' || params[:include] == 'tasks_and_projects'
-            users = user_presenter(all_users.includes(:projects, :tasks).where("deleted_at is null"), view: :with_user_projects_and_tasks)
+            users = user_presenter(all_users.includes(:projects, :tasks), view: :with_user_projects_and_tasks)
             present users
             status :ok
           else
-            users = user_presenter(all_users.where("deleted_at is null"), view: :normal)
+            users = user_presenter(all_users, view: :normal)
             present users
             status :ok
           end

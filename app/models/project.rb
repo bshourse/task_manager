@@ -2,4 +2,5 @@ class Project < ApplicationRecord
   has_many :tasks
   belongs_to :user
   validates :project_name, presence: true, uniqueness: true
+  default_scope { where("deleted_at is null") }
 end

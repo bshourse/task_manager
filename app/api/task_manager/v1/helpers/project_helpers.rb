@@ -8,7 +8,7 @@ module TaskManager
         end
 
         def current_project
-          Project.find(params[:id])
+          Project.unscoped.find(params[:id])
         end
 
       end

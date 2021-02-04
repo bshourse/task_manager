@@ -8,7 +8,7 @@ module TaskManager
         end
 
         def current_user
-          User.find(params[:id])
+          User.unscoped.find(params[:id])
         end
 
       end

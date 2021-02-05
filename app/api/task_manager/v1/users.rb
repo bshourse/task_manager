@@ -95,7 +95,7 @@ module TaskManager
         route_param :id do
           delete do
               user = current_user
-              user.update!(deleted_at: Time.now)
+              User.mark_for_deletion(user)
               status :no_content
           end
         end

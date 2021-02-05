@@ -77,11 +77,7 @@ module TaskManager
         route_param :id do
           delete do
               project = current_project
-              project.update!(deleted_at: Time.now)
-              if Task.exists?(:project_id => "#{project.id}") # тут делаю проверку чтобы лишний раз не пытать обновить задачи, если у проекта их нет
-                task = Task.where("project_id = #{project.id}")
-                task.update_all(deleted_at: Time.now)
-              end
+              Project.mark_for_deletion(project)
               status :no_content
           end
         end

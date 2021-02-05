@@ -8,4 +8,9 @@ class Task < ApplicationRecord
   validates :performer_id, numericality: { only_integer: true, greater_than: 0 }
   enum status: { open: 0, in_progress: 1, resolved: 2, reopen: 3, closed: 4 }
   default_scope { where("deleted_at is null") }
+
+  def self.mark_for_deletion(task)
+    task.update!(deleted_at: Time.now)
+  end
+
 end

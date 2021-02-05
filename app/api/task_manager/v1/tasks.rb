@@ -76,9 +76,9 @@ module TaskManager
         desc 'Delete task'
         route_param :id do
           delete do
-              task = current_task
-              task.update!(deleted_at: Time.now)
-              status :no_content
+            task = current_task
+            Task.mark_for_deletion(task)
+            status :no_content
           end
         end
       end

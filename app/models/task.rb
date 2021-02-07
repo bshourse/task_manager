@@ -9,8 +9,8 @@ class Task < ApplicationRecord
   enum status: { open: 0, in_progress: 1, resolved: 2, reopen: 3, closed: 4 }
   default_scope { where("deleted_at is null") }
 
-  def self.mark_for_deletion(task)
-    task.update!(deleted_at: Time.now)
+  def mark_for_deletion
+    update!(deleted_at: Time.now)
   end
 
 end

@@ -7,14 +7,6 @@ module TaskManager
 
       helpers V1::Helpers::ProjectHelpers, V1::Helpers::PresenterHelpers
 
-      rescue_from ActiveRecord::RecordNotFound do |e|
-        error!(e.message, 404)
-      end
-
-      rescue_from ActiveRecord::RecordInvalid do |e|
-        error!(e.message, 422)
-      end
-
       resource :projects do
 
         desc 'Return list of projects'
@@ -76,9 +68,12 @@ module TaskManager
         desc 'Delete project'
         route_param :id do
           delete do
+            Project.transaction do
               project = current_project
-              Project.mark_for_deletion(project)
+              project.mark_for_deletion
+              project.tasks.update_all(deleted_at: Time.now) if project.tasks.exists?  # если не добавить проверку то будет выполняться запрос на обновление deleted_at задачам, которых фактически нет
               status :no_content
+            end
           end
         end
       end

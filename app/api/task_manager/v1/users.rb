@@ -7,14 +7,6 @@ module TaskManager
 
       helpers V1::Helpers::UserHelpers, V1::Helpers::PresenterHelpers
 
-      rescue_from ActiveRecord::RecordNotFound do |e|
-        error!(e.message, 404)
-      end
-
-      rescue_from ActiveRecord::RecordInvalid do |e|
-        error!(e.message, 422)
-      end
-
       resource :users do
 
         desc 'Return list of users'
@@ -95,7 +87,7 @@ module TaskManager
         route_param :id do
           delete do
               user = current_user
-              User.mark_for_deletion(user)
+              user.mark_for_deletion
               status :no_content
           end
         end

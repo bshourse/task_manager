@@ -7,18 +7,6 @@ module TaskManager
 
       helpers V1::Helpers::TaskHelpers, V1::Helpers::PresenterHelpers
 
-      rescue_from ActiveRecord::RecordNotFound do |e|
-        error!(e.message, 404)
-      end
-
-      rescue_from ActiveRecord::RecordInvalid do |e|
-        error!(e.message, 422)
-      end
-
-      rescue_from ArgumentError do |e|
-        error!(e.message, 400)
-      end
-
       resource :tasks do
 
         desc 'Return list of tasks'
@@ -77,7 +65,7 @@ module TaskManager
         route_param :id do
           delete do
             task = current_task
-            Task.mark_for_deletion(task)
+            task.mark_for_deletion
             status :no_content
           end
         end

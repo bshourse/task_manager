@@ -68,12 +68,9 @@ module TaskManager
         desc 'Delete project'
         route_param :id do
           delete do
-            Project.transaction do
               project = current_project
-              project.mark_for_deletion
-              project.tasks.update_all(deleted_at: Time.now) if project.tasks.exists?  # если не добавить проверку то будет выполняться запрос на обновление deleted_at задачам, которых фактически нет
+              project.mark_for_deletion(project)
               status :no_content
-            end
           end
         end
       end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_04_201629) do
+ActiveRecord::Schema.define(version: 2021_02_08_204543) do
 
   create_table "projects", force: :cascade do |t|
     t.integer "user_id"
@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 2021_02_04_201629) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.datetime "deleted_at"
+    t.index ["project_name"], name: "index_projects_on_project_name", unique: true
     t.index ["user_id"], name: "index_projects_on_user_id"
   end
 
@@ -35,6 +36,7 @@ ActiveRecord::Schema.define(version: 2021_02_04_201629) do
     t.datetime "deleted_at"
     t.index ["project_id"], name: "index_tasks_on_project_id"
     t.index ["status"], name: "index_tasks_on_status"
+    t.index ["task_name"], name: "index_tasks_on_task_name", unique: true
     t.index ["user_id"], name: "index_tasks_on_user_id"
   end
 
@@ -46,6 +48,7 @@ ActiveRecord::Schema.define(version: 2021_02_04_201629) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "last_name"
     t.datetime "deleted_at"
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
 end

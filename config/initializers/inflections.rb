@@ -1,5 +1,5 @@
-# Вместо кода в файле application.rb для Rails 6 добавляю этот код иначе падаю в uninitialized constant при старте сервера
+# Instead of the code in the application.rb for Rails 6 i add this code.. otherwise I fall to uninitialized constant when the server start
 # https://github.com/rails/rails/issues/35567
- ActiveSupport::Inflector.inflections(:en) do |inflect|
-   inflect.acronym 'API'
- end
+ActiveSupport::Inflector.inflections(:en) do |inflect|
+  inflect.acronym 'API'
+end

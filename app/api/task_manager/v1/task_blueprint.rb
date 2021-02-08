@@ -8,15 +8,14 @@ module TaskManager
       end
 
       view :normal do
-        fields  :user_id, :project_id, :task_name, :status, :due_date
+        fields :user_id, :project_id, :task_name, :status, :due_date
       end
 
       view :extended do
         include_view :normal
         fields :description, :implementation_time
-        field :deleted_at, datetime_format: "%d-%B-%Y %H:%M:%S"
+        field :deleted_at, datetime_format: '%d-%B-%Y %H:%M:%S'
       end
     end
   end
 end
-

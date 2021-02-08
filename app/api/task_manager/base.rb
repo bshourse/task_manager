@@ -1,6 +1,5 @@
 module TaskManager
   class Base < Grape::API
-
     rescue_from ActiveRecord::RecordNotFound do |e|
       error!(e.message, 404)
     end
@@ -17,9 +16,8 @@ module TaskManager
       error!(e.message, 503)
     end
 
-    mount TaskManager::V1::Tasks # это путь к нашему API, все методы для задач напишу в Tasks.rb
+    mount TaskManager::V1::Tasks # this is a path to my API, all methods for tasks i'll write in Task.rb
     mount TaskManager::V1::Projects
     mount TaskManager::V1::Users
-
   end
 end

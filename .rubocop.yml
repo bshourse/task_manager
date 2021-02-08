@@ -1,0 +1,33 @@
+require:
+  - rubocop-rails
+  - rubocop-rspec
+
+AllCops:
+  Exclude:
+    - 'config/environments/**.rb'
+    - 'node_modules/**/*'
+    - 'db/schema.rb'
+    - 'bin/**/*'
+    - 'config/puma.rb'
+    - 'config/spring.rb'
+
+Metrics/BlockLength:
+  Max: 115
+
+Layout/LineLength:
+  Max: 175
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+SkipsModelValidations:
+  AllowedMethods: update_all
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 7
+
+RSpec/MultipleExpectations:
+  Max: 2

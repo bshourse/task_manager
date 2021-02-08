@@ -2,7 +2,6 @@ module TaskManager
   module V1
     module Helpers
       module PresenterHelpers
-
         def project_presenter(project_collection, view)
           ProjectBlueprint.render_as_json(project_collection, view)
         end
@@ -14,7 +13,6 @@ module TaskManager
         def user_presenter(user_collection, view)
           UserBlueprint.render_as_json(user_collection, view)
         end
-
       end
     end
   end

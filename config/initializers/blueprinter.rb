@@ -1,4 +1,3 @@
-Blueprinter.configure do |config| # сортирую ключи в порядке который я указываю в коде репрезентера, по-умолчанию по имени
+Blueprinter.configure do |config| # i sort the keys in the order that i specify in the representer code, default: by name
   config.sort_fields_by = :definition
 end
-
